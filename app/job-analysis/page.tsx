@@ -1,6 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { StringList } from "@/components/string-list";
+import { TextCard } from "@/components/text-card";
+import { VerdictCard } from "@/components/verdict-card";
 
 type RequirementItem = {
   item: string;
@@ -76,38 +79,6 @@ function RequirementList({
             </li>
           );
         })}
-      </ul>
-    </div>
-  );
-}
-
-function StringList({
-  title,
-  items,
-  accent,
-}: {
-  title: string;
-  items: string[];
-  accent: "amber" | "emerald";
-}) {
-  if (!items.length) return null;
-  const titleColor =
-    accent === "emerald"
-      ? "text-emerald-700 dark:text-emerald-400"
-      : "text-amber-700 dark:text-amber-400";
-  return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-      <h2 className={`text-sm font-medium ${titleColor}`}>{title}</h2>
-      <ul className="mt-4 space-y-2">
-        {items.map((item, i) => (
-          <li
-            key={i}
-            className="flex gap-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300"
-          >
-            <span aria-hidden>·</span>
-            <span>{item}</span>
-          </li>
-        ))}
       </ul>
     </div>
   );
@@ -193,25 +164,9 @@ export default function JobAnalysisPage() {
       {result && (
         <section className="mt-8 space-y-4">
           {/* 一句话结论放最上面，视觉最重 */}
-          <div className="rounded-2xl border border-amber-300 bg-amber-50 p-6 dark:border-amber-700 dark:bg-amber-950/40">
-            <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
-              结论
-            </p>
-            <p className="mt-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-              {result.verdict}
-            </p>
-          </div>
+          <VerdictCard text={result.verdict} />
 
-          {result.between_lines && (
-            <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-              <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                JD 的言外之意
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
-                {result.between_lines}
-              </p>
-            </div>
-          )}
+          <TextCard title="JD 的言外之意" text={result.between_lines} />
 
           <RequirementList title="硬门槛（没有它干不了）" items={result.hard_requirements} />
           <RequirementList title="软要求（加分项和氛围信号）" items={result.soft_requirements} />
