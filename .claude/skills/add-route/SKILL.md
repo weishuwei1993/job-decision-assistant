@@ -1,6 +1,6 @@
 ---
 name: add-route
-description: 生成 Next.js Route Handler（app/api/<slug>/route.ts），含输入校验、加载 prompts/ 提示词、调用 lib/claude、统一错误处理。新增或修改分析类 API 路由时使用。
+description: 生成 Next.js Route Handler（app/api/<slug>/route.ts），含输入校验、加载 prompts/ 提示词、调用 lib/ai、统一错误处理。新增或修改分析类 API 路由时使用。
 argument-hint: [功能slug]
 ---
 
@@ -9,8 +9,8 @@ argument-hint: [功能slug]
 ## 执行步骤
 1. 按下面的骨架创建 `app/api/<slug>/route.ts`
 2. 提示词从 `prompts/<slug>.md` 读取（`node:fs/promises` + `process.cwd()`），变量用 `template.replaceAll("{{VAR}}", value)` 填入；**禁止把提示词文本写进代码**
-3. Claude 调用统一走 `@/lib/claude`：`runAnalysis({ template, variables, webSearch? })` 返回模型原始文本；`parseJsonResult(raw)` 解析 JSON 输出（自带容错，失败抛 SyntaxError）。需要最新信息的分析（如公司研究）传 `webSearch: true`。**若 `lib/claude.ts` 尚不存在**：先加载 `claude-api` skill 确认当前推荐的模型与 SDK 用法，再按此契约创建，不要凭记忆写 API 调用代码
-4. 错误分级：必填字段缺失/格式不对 → 400；上游 Claude API 失败 → 502；其他 → 500。错误文案用中文，不暴露内部细节（如 key、堆栈）
+3. 模型调用统一走 `@/lib/ai`：`runAnalysis({ template, variables, webSearch? })` 返回模型原始文本；`parseJsonResult(raw)` 解析 JSON 输出（自带容错，失败抛 SyntaxError）。需要最新信息的分析（如公司研究）传 `webSearch: true`。**若 `lib/ai.ts` 尚不存在**：先查阅智谱开放平台文档（https://docs.bigmodel.cn ，模型 glm-5.3-flash 走 OpenAI 兼容接口）确认参数用法，再按此契约创建，不要凭记忆写 API 调用代码
+4. 错误分级：必填字段缺失/格式不对 → 400；上游模型 API 失败 → 502；其他 → 500。错误文案用中文，不暴露内部细节（如 key、堆栈）
 5. 响应形状统一：成功 `{ result }`，失败 `{ error }`
 
 ## 路由骨架
@@ -19,7 +19,7 @@ argument-hint: [功能slug]
 import { NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { parseJsonResult, runAnalysis } from "@/lib/claude";
+import { parseJsonResult, runAnalysis } from "@/lib/ai";
 
 // TODO: 与 prompts/<slug>.md 的变量占位符对齐
 type RequestBody = {
@@ -64,6 +64,6 @@ export async function POST(req: Request) {
 
 ## 注意
 - 若 `prompts/<slug>.md` 或对应页面不存在，提醒先跑 `/write-prompt`、`/gen-analyze-page`
-- 涉及 `lib/claude.ts` 的新建或修改，必须先加载 `claude-api` skill
+- 涉及 `lib/ai.ts` 的新建或修改，先查阅智谱开放平台文档确认参数用法（模型 glm-5.3-flash，OpenAI 兼容接口）
 - `.env.local` 里的 key 只在服务端读取，响应体里不得出现任何 key 或上游原始报错
 - 部署为 standalone 输出时，需确认 `prompts/` 目录随产物发布

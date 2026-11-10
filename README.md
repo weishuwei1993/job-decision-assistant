@@ -5,7 +5,7 @@ AI 驱动的求职决策助手，帮用户在投简历前想清楚：我想去�
 ## 技术栈
 
 - **前端**：Next.js App Router + React + TypeScript + Tailwind
-- **分析层**：Anthropic Claude API（支持联网搜索）
+- **分析层**：智谱 GLM（glm-5.3-flash，OpenAI 兼容接口，支持联网搜索）
 - **数据层**：Supabase
 - **包管理**：npm
 - **开发**：Claude Code
@@ -14,7 +14,7 @@ AI 驱动的求职决策助手，帮用户在投简历前想清楚：我想去�
 
 - `app/`：Next.js 页面和 API 路由
 - `components/`：可复用 UI 组件
-- `lib/`：Claude API、Supabase 等工具封装
+- `lib/`：模型调用（智谱 GLM）、Supabase 等工具封装
 - `prompts/`：分析提示词模板，与代码分离
 - `.claude/skills/`：Claude Code 自定义技能
 

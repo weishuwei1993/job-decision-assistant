@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { fillTemplate, runChat } from "@/lib/claude";
+import { fillTemplate, runChat } from "@/lib/ai";
 import { sanitizeHistory } from "@/lib/chat";
 
 export async function POST(req: Request) {
@@ -52,8 +52,8 @@ export async function POST(req: Request) {
     const message = err instanceof Error ? err.message : "";
     return NextResponse.json(
       {
-        error: message.includes("ANTHROPIC_API_KEY")
-          ? "服务端未配置 API Key，请在 .env.local 中填写 ANTHROPIC_API_KEY"
+        error: message.includes("ZHIPU_API_KEY")
+          ? "服务端 API Key 未配置或无效，请在 .env.local 中检查 ZHIPU_API_KEY"
           : "面试官暂时联系不上，请稍后再试",
       },
       { status: 502 }

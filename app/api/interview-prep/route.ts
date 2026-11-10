@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { parseJsonResult, runAnalysis } from "@/lib/claude";
+import { parseJsonResult, runAnalysis } from "@/lib/ai";
 
 type RequestBody = {
   position: string;
@@ -65,8 +65,8 @@ export async function POST(req: Request) {
     const message = err instanceof Error ? err.message : "";
     return NextResponse.json(
       {
-        error: message.includes("ANTHROPIC_API_KEY")
-          ? "服务端未配置 API Key，请在 .env.local 中填写 ANTHROPIC_API_KEY"
+        error: message.includes("ZHIPU_API_KEY")
+          ? "服务端 API Key 未配置或无效，请在 .env.local 中检查 ZHIPU_API_KEY"
           : "分析失败，请稍后再试",
       },
       { status: 502 }

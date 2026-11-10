@@ -15,7 +15,7 @@ argument-hint: [可选：要检查的文件或目录，默认查 git 未提交�
 1. **组件写法**：函数式组件 + Hooks；出现 class 组件即报
 2. **命名**：文件名 kebab-case（`page.tsx`/`route.ts`/`layout.tsx` 等 Next.js 约定名除外）；组件和类型 PascalCase；其余变量/函数 camelCase；导入走 `@/` 别名
 3. **API 边界**：前端只通过 `fetch("/api/...")` 调本项目的 Route Handler；页面/客户端组件里不得出现第三方后端 SDK 直连
-4. **密钥安全**：不得出现硬编码 key；`ANTHROPIC_API_KEY`、Supabase 服务端密钥只能在服务端代码读取；`"use client"` 文件里引用服务端专用环境变量即报
+4. **密钥安全**：不得出现硬编码 key；`ZHIPU_API_KEY`、Supabase 服务端密钥只能在服务端代码读取；`"use client"` 文件里引用服务端专用环境变量即报
 5. **提示词**：提示词文本不得硬编码在代码里，必须从 `prompts/` 加载
 6. **页面模式**：新增分析页面必须遵循「输入表单 → 调 API → 结构化结果展示」；结论卡片在最上、底部有「AI 分析仅供参考」提示
 7. **Tailwind**：语义色固定（emerald=✅ 匹配、amber=⚠️ 缺口/结论强调、neutral=常规、red=错误）；间距用 4 的倍数（p-4/p-6/mt-8）；容器统一 `mx-auto max-w-3xl px-4 py-10`；同页面内按钮/卡片样式一致；深色模式类成对出现（`dark:`）

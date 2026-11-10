@@ -1,4 +1,4 @@
-import type { ChatMessage } from "@/lib/claude";
+import type { ChatMessage } from "@/lib/ai";
 
 // 防滥用上限：会话最多取最近 50 条，单条内容最长 10000 字符
 const MAX_MESSAGES = 50;
