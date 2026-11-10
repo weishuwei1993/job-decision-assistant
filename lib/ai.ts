@@ -116,6 +116,8 @@ async function complete(params: {
   system?: string;
   messages: ChatMessage[];
   temperature: number;
+  /** 思考程度：分析报告用 high；对话轮次用 low 控制延迟 */
+  reasoningEffort: "low" | "high";
   webSearch?: boolean;
 }): Promise<string> {
   assertApiKey();
@@ -136,8 +138,10 @@ async function complete(params: {
       max_tokens: MAX_TOKENS,
       // 流式接收，避免长思考撞上 HTTP 超时；推理内容单独放在 reasoning_content，这里只聚合正文
       stream: true,
-      // GLM-5.3-Flash 的思考模式只能开启、不能关闭
+      // GLM-5.3-Flash 的思考模式只能开启、不能关闭；
+      // reasoning_effort 默认 max（深度思考），真实分析场景会跑到几分钟级，必须显式降档
       thinking: { type: "enabled" },
+      reasoning_effort: params.reasoningEffort,
       ...(params.webSearch ? { tools: [buildWebSearchTool()] } : {}),
     }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
@@ -178,6 +182,7 @@ export async function runAnalysis({
   return complete({
     messages: [{ role: "user", content: fillTemplate(template, variables) }],
     temperature: 0.6,
+    reasoningEffort: "high",
     webSearch,
   });
 }
@@ -191,7 +196,13 @@ export async function runChat({
   messages,
   webSearch = false,
 }: RunChatOptions): Promise<string> {
-  return complete({ system, messages, temperature: 0.9, webSearch });
+  return complete({
+    system,
+    messages,
+    temperature: 0.9,
+    reasoningEffort: "low",
+    webSearch,
+  });
 }
 
 /**

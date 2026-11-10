@@ -48,6 +48,10 @@ export async function POST(req: Request) {
     const reply = await runChat({ system, messages: history.messages });
     return NextResponse.json({ reply });
   } catch (err) {
+    if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
+      console.error("模拟面试超时:", err);
+      return NextResponse.json({ error: "面试官响应超时了，请重试一次" }, { status: 504 });
+    }
     console.error("模拟面试失败:", err);
     const message = err instanceof Error ? err.message : "";
     return NextResponse.json(

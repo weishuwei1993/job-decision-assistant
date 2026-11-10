@@ -51,6 +51,10 @@ export async function POST(req: Request) {
         { status: 502 }
       );
     }
+    if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
+      console.error("岗位分析超时:", err);
+      return NextResponse.json({ error: "分析超时了，请重试一次" }, { status: 504 });
+    }
     console.error("岗位分析失败:", err);
     const message = err instanceof Error ? err.message : "";
     return NextResponse.json(
