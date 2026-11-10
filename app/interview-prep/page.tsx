@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { StringList } from "@/components/string-list";
 import { TextCard } from "@/components/text-card";
@@ -105,6 +106,14 @@ export default function InterviewPrepPage() {
       </h1>
       <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
         猜透面试官真正想考察什么，带着答题思路、反问清单和避坑提醒上场。
+      </p>
+      <p className="mt-3 text-sm">
+        <Link
+          href="/mock-interview"
+          className="font-medium text-neutral-900 underline underline-offset-4 hover:text-neutral-600 dark:text-neutral-100 dark:hover:text-neutral-400"
+        >
+          备考做完了？直接来一场模拟面试 →
+        </Link>
       </p>
 
       {/* 输入表单 */}

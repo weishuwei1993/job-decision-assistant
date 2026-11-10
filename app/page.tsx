@@ -23,7 +23,7 @@ const FEATURES: Feature[] = [
   {
     href: "/interview-prep",
     title: "面试准备",
-    desc: "猜透面试官真正想考什么，带着答题思路和反问清单上场",
+    desc: "猜透面试官真正想考什么，还能来一场带点评的模拟面试",
     ready: true,
   },
   {

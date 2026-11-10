@@ -1,49 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { AssistantBubble, UserBubble } from "@/components/chat-bubbles";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
 const EMPTY_HINT =
   "先说说你现在的困惑吧：不知道自己适合什么、要不要转行、几个选择之间怎么挑，都可以。";
-
-const MARKDOWN_COMPONENTS = {
-  p: ({ children }: { children?: React.ReactNode }) => (
-    <p className="mb-2 leading-relaxed last:mb-0">{children}</p>
-  ),
-  ul: ({ children }: { children?: React.ReactNode }) => (
-    <ul className="mb-2 list-disc space-y-1 pl-5 last:mb-0">{children}</ul>
-  ),
-  ol: ({ children }: { children?: React.ReactNode }) => (
-    <ol className="mb-2 list-decimal space-y-1 pl-5 last:mb-0">{children}</ol>
-  ),
-  strong: ({ children }: { children?: React.ReactNode }) => (
-    <strong className="font-semibold">{children}</strong>
-  ),
-  h2: ({ children }: { children?: React.ReactNode }) => (
-    <h2 className="mb-2 text-base font-semibold last:mb-0">{children}</h2>
-  ),
-  h3: ({ children }: { children?: React.ReactNode }) => (
-    <h3 className="mb-2 text-sm font-semibold last:mb-0">{children}</h3>
-  ),
-};
-
-function AssistantBubble({ content }: { content: string }) {
-  return (
-    <div className="mr-auto max-w-[85%] rounded-2xl border border-neutral-200 bg-white p-4 text-sm text-neutral-800 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-      <ReactMarkdown components={MARKDOWN_COMPONENTS}>{content}</ReactMarkdown>
-    </div>
-  );
-}
-
-function UserBubble({ content }: { content: string }) {
-  return (
-    <div className="ml-auto max-w-[85%] whitespace-pre-wrap rounded-2xl bg-neutral-900 px-4 py-3 text-sm leading-relaxed text-white dark:bg-neutral-100 dark:text-neutral-900">
-      {content}
-    </div>
-  );
-}
 
 export default function CareerDirectionPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -108,9 +71,7 @@ export default function CareerDirectionPage() {
             <AssistantBubble key={i} content={msg.content} />
           )
         )}
-        {loading && (
-          <p className="text-sm text-neutral-400">对方思考中……</p>
-        )}
+        {loading && <p className="text-sm text-neutral-400">对方思考中……</p>}
         {error && (
           <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/50">
             {error}
