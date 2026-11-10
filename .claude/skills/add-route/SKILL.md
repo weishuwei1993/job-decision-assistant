@@ -9,7 +9,7 @@ argument-hint: [功能slug]
 ## 执行步骤
 1. 按下面的骨架创建 `app/api/<slug>/route.ts`
 2. 提示词从 `prompts/<slug>.md` 读取（`node:fs/promises` + `process.cwd()`），变量用 `template.replaceAll("{{VAR}}", value)` 填入；**禁止把提示词文本写进代码**
-3. Claude 调用统一走 `@/lib/claude` 的 `runAnalysis({ template, variables })`，返回字符串。**若 `lib/claude.ts` 尚不存在**：先加载 `claude-api` skill 确认当前推荐的模型与 SDK 用法，再按此契约创建，不要凭记忆写 API 调用代码
+3. Claude 调用统一走 `@/lib/claude`：`runAnalysis({ template, variables, webSearch? })` 返回模型原始文本；`parseJsonResult(raw)` 解析 JSON 输出（自带容错，失败抛 SyntaxError）。需要最新信息的分析（如公司研究）传 `webSearch: true`。**若 `lib/claude.ts` 尚不存在**：先加载 `claude-api` skill 确认当前推荐的模型与 SDK 用法，再按此契约创建，不要凭记忆写 API 调用代码
 4. 错误分级：必填字段缺失/格式不对 → 400；上游 Claude API 失败 → 502；其他 → 500。错误文案用中文，不暴露内部细节（如 key、堆栈）
 5. 响应形状统一：成功 `{ result }`，失败 `{ error }`
 
@@ -19,7 +19,7 @@ argument-hint: [功能slug]
 import { NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { runAnalysis } from "@/lib/claude";
+import { parseJsonResult, runAnalysis } from "@/lib/claude";
 
 // TODO: 与 prompts/<slug>.md 的变量占位符对齐
 type RequestBody = {
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
         MY_BACKGROUND: body.background?.trim() || "（用户未填写背景）",
       },
     });
-    return NextResponse.json({ result: JSON.parse(result) });
+    return NextResponse.json({ result: parseJsonResult(result) });
   } catch (err) {
     if (err instanceof SyntaxError) {
       // 模型输出不是合法 JSON
