@@ -30,7 +30,7 @@ const FEATURES: Feature[] = [
     href: "/career-direction",
     title: "职业方向探索",
     desc: "迷茫的时候聊一聊，用小实验低成本验证下一个方向",
-    ready: false,
+    ready: true,
   },
 ];
 
