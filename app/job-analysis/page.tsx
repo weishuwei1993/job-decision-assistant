@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { StringList } from "@/components/string-list";
 import { TextCard } from "@/components/text-card";
 import { VerdictCard } from "@/components/verdict-card";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 type RequirementItem = {
   item: string;
@@ -23,25 +24,28 @@ type AnalysisResult = {
 
 const MATCH_BADGE: Record<
   RequirementItem["match"],
-  { icon: string; label: string; className: string }
+  { icon: string; label: string; className: string; bgColor: string }
 > = {
   matched: {
     icon: "✅",
     label: "匹配",
     className:
       "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400",
+    bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
   },
   gap: {
     icon: "⚠️",
     label: "缺口",
     className:
       "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+    bgColor: "bg-amber-100 dark:bg-amber-900/30",
   },
   unknown: {
     icon: "❓",
     label: "未知",
     className:
       "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400",
+    bgColor: "bg-neutral-100 dark:bg-neutral-800",
   },
 };
 
@@ -54,10 +58,17 @@ function RequirementList({
 }) {
   if (!items.length) return null;
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-      <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-        {title}
-      </h2>
+    <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="flex items-center gap-2">
+        <div className="flex-shrink-0 rounded-full bg-blue-100 p-1 dark:bg-blue-900/50">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-600 dark:text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+          </svg>
+        </div>
+        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+          {title}
+        </h2>
+      </div>
       <ul className="mt-4 space-y-4">
         {items.map((req, i) => {
           const badge = MATCH_BADGE[req.match] ?? MATCH_BADGE.unknown;
@@ -113,17 +124,19 @@ export default function JobAnalysisPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-        岗位需求分析器
-      </h1>
-      <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-        把招聘 JD 完整粘贴进来，帮你想清楚：这份工作到底要什么，跟你合不合适，值不值得投。
-      </p>
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          岗位需求分析器
+        </h1>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+          把招聘 JD 完整粘贴进来，帮你想清楚：这份工作到底要什么，跟你合不合适，值不值得投。
+        </p>
+      </div>
 
       {/* 输入表单 */}
       <form
         onSubmit={handleSubmit}
-        className="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+        className="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
       >
         <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
           岗位 JD 原文
@@ -133,7 +146,7 @@ export default function JobAnalysisPage() {
             placeholder="把招聘页面的岗位职责、任职要求完整复制粘贴到这里，越完整分析越准"
             rows={10}
             required
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-neutral-100"
+            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
           />
         </label>
         <label className="mt-4 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -143,15 +156,22 @@ export default function JobAnalysisPage() {
             onChange={(e) => setBackground(e.target.value)}
             placeholder="你的专业、工作年限、做过的项目、掌握的技能"
             rows={4}
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-neutral-100"
+            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
           />
         </label>
         <button
           type="submit"
-          disabled={loading}
-          className="mt-6 w-full rounded-xl bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+          disabled={loading || !jobDescription.trim()}
+          className="mt-6 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600"
         >
-          {loading ? "分析中，通常需要半分钟到一分钟……" : "开始分析"}
+          {loading ? (
+            <div className="flex items-center justify-center gap-2">
+              <LoadingSpinner />
+              <span>分析中...</span>
+            </div>
+          ) : (
+            "开始分析"
+          )}
         </button>
         {error && (
           <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/50">
@@ -162,7 +182,7 @@ export default function JobAnalysisPage() {
 
       {/* 结构化结果展示 */}
       {result && (
-        <section className="mt-8 space-y-4">
+        <section className="mt-8 space-y-6">
           {/* 一句话结论放最上面，视觉最重 */}
           <VerdictCard text={result.verdict} />
 
@@ -184,9 +204,14 @@ export default function JobAnalysisPage() {
         </section>
       )}
 
-      <p className="mt-10 text-center text-xs text-neutral-400">
-        AI 分析仅供参考，重大决策请多方核实。
-      </p>
+      <div className="mt-12 rounded-2xl border border-dashed border-neutral-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 text-center dark:border-neutral-800 dark:from-blue-950/20 dark:to-indigo-950/20">
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          📝 提示
+        </h3>
+        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+          分析结果仅作参考。请结合实际情况综合判断。
+        </p>
+      </div>
     </main>
   );
 }

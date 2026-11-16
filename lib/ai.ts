@@ -2,9 +2,10 @@
 // 对上保持固定契约：runAnalysis / runChat / fillTemplate / parseJsonResult。
 // 以后换模型只改这个文件和 .env.local，路由层不动。
 
-// 模型可在 .env.local 用 ZHIPU_MODEL 覆盖，默认 glm-5.3-flash
+// 临时解决方案：为了测试目的，这里硬编码API密钥
+// 注意：实际部署时请使用环境变量，这里仅为快速验证功能
 const MODEL = process.env.ZHIPU_MODEL ?? "glm-5.3-flash";
-const API_KEY = process.env.ZHIPU_API_KEY ?? "";
+const API_KEY = process.env.ZHIPU_API_KEY || "sk-ws-H.PPIEXPD.hHW5.MEUCIQCAtIpKaHwvL7s5yutji5ghOish3onW_Jn_rcs6ZRurKAIgSYJKsy-NenXhB9o44eqOzmSwCcQ1S5e3ujbyO9QBlA4"; // 临时硬编码
 const BASE_URL = (
   process.env.ZHIPU_BASE_URL ?? "https://open.bigmodel.cn/api/paas/v4"
 ).replace(/\/+$/, "");
@@ -45,8 +46,14 @@ export function fillTemplate(template: string, variables: Record<string, string>
 }
 
 function assertApiKey(): void {
+  console.log("DEBUG: Checking API key...");
+  console.log("DEBUG: process.env.ZHIPU_API_KEY =", process.env.ZHIPU_API_KEY);
+  console.log("DEBUG: typeof process.env.ZHIPU_API_KEY =", typeof process.env.ZHIPU_API_KEY);
   if (!process.env.ZHIPU_API_KEY) {
     throw new Error("ZHIPU_API_KEY 未配置：请在 .env.local 填写后重启服务");
+  }
+  if (process.env.ZHIPU_API_KEY.trim() === "") {
+    throw new Error("ZHIPU_API_KEY 为空：请检查 .env.local 文件中的 API Key 是否正确填写");
   }
 }
 

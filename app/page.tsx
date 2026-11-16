@@ -1,91 +1,111 @@
-import Link from "next/link";
+'use client';
 
-type Feature = {
-  href: string;
-  title: string;
-  desc: string;
-  ready: boolean;
-};
-
-const FEATURES: Feature[] = [
-  {
-    href: "/job-analysis",
-    title: "岗位需求分析器",
-    desc: "粘贴 JD，看懂它到底要什么、跟你合不合适、值不值得投",
-    ready: true,
-  },
-  {
-    href: "/company-research",
-    title: "公司/行业研究助手",
-    desc: "查公司靠什么赚钱、行业往哪走、口碑如何，判断值不值得去",
-    ready: true,
-  },
-  {
-    href: "/interview-prep",
-    title: "面试准备",
-    desc: "猜透面试官真正想考什么，还能来一场带点评的模拟面试",
-    ready: true,
-  },
-  {
-    href: "/career-direction",
-    title: "职业方向探索",
-    desc: "迷茫的时候聊一聊，用小实验低成本验证下一个方向",
-    ready: true,
-  },
-];
+import { Hero } from '@/app/components/Hero';
+import { ToolGrid } from '@/app/components/ToolGrid';
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-16">
-      <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-        天生我材必有用
-      </h1>
-      <p className="mt-3 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
-        投简历前，先想清楚三件事：我想去哪、我能去哪、哪家公司值得去。
-      </p>
+    <div className="min-h-screen flex flex-col">
+      <a
+        href="#tools"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[#101828] focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+      >
+        跳到工具区
+      </a>
 
-      <section className="mt-10 grid gap-4 sm:grid-cols-2">
-        {FEATURES.map((feature) =>
-          feature.ready ? (
+      <header className="sticky top-0 z-40 px-4 pt-3 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 rounded-full border-2 border-white bg-white/90 px-3 shadow-[0_10px_30px_-24px_rgba(16,24,40,0.45)] backdrop-blur-md sm:px-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 rounded-full pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b4be0]/40 focus-visible:ring-offset-2"
+          >
+            <span className="grid size-10 place-items-center rounded-2xl bg-[#eef2fe] text-[#2b4be0] ring-1 ring-[#2b4be0]/10">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </span>
+            <span className="hidden text-[15px] font-bold tracking-tight text-[#101828] sm:inline">天生我材必有用</span>
+          </Link>
+
+          <nav aria-label="主导航" className="flex items-center gap-1 sm:gap-1.5">
             <Link
-              key={feature.href}
-              href={feature.href}
-              className="group rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition hover:border-neutral-900 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-100"
+              href="/"
+              className="rounded-full bg-[#eef2fe] px-3 py-2 text-[12.5px] font-bold text-[#2b4be0] transition-colors hover:bg-[#2b4be0] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b4be0]/40 sm:px-3.5"
             >
-              <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
-                {feature.title}
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
-                {feature.desc}
-              </p>
-              <p className="mt-4 text-sm font-medium text-neutral-900 group-hover:underline dark:text-neutral-100">
-                进入 →
-              </p>
+              首页
             </Link>
-          ) : (
-            <div
-              key={feature.href}
-              className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm opacity-60 dark:border-neutral-800 dark:bg-neutral-900"
+            <Link
+              href="/job-analysis"
+              className="rounded-full bg-[#eef2fe] px-3 py-2 text-[12.5px] font-bold text-[#2b4be0] transition-colors hover:bg-[#2b4be0] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b4be0]/40 sm:px-3.5"
             >
-              <div className="flex items-center justify-between gap-2">
-                <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
-                  {feature.title}
-                </h2>
-                <span className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-                  即将上线
-                </span>
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
-                {feature.desc}
-              </p>
-            </div>
-          )
-        )}
-      </section>
+              岗位分析
+            </Link>
+            <Link
+              href="/company-research"
+              className="rounded-full bg-[#eef2fe] px-3 py-2 text-[12.5px] font-bold text-[#2b4be0] transition-colors hover:bg-[#2b4be0] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b4be0]/40 sm:px-3.5"
+            >
+              公司研究
+            </Link>
+            <Link
+              href="/interview-prep"
+              className="rounded-full bg-[#eef2fe] px-3.5 py-2 text-[12.5px] font-bold text-[#2b4be0] transition-colors hover:bg-[#2b4be0] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b4be0]/40 sm:inline-flex"
+            >
+              面试准备
+            </Link>
+            <Link
+              href="/career-direction"
+              className="rounded-full bg-[#eef2fe] px-3.5 py-2 text-[12.5px] font-bold text-[#2b4be0] transition-colors hover:bg-[#2b4be0] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b4be0]/40 sm:inline-flex"
+            >
+              职业方向探索
+            </Link>
+          </nav>
+        </div>
+      </header>
 
-      <p className="mt-12 text-center text-xs text-neutral-400">
-        AI 分析仅供参考，重大决策请多方核实。
-      </p>
-    </main>
+      <main className="flex-1">
+        <Hero />
+
+        <ToolGrid />
+      </main>
+
+      <footer className="px-5 py-10 sm:px-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
+          <span className="grid size-9 place-items-center rounded-2xl bg-[#eef2fe] text-[#2b4be0]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </span>
+          <p className="text-[13px] font-bold text-[#101828]">天生我材必有用</p>
+          <nav aria-label="页脚导航" className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] font-medium">
+            <Link
+              href="/job-analysis"
+              className="text-[#667085] transition-colors hover:text-[#2b4be0]"
+            >
+              岗位分析
+            </Link>
+            <Link
+              href="/company-research"
+              className="text-[#667085] transition-colors hover:text-[#2b4be0]"
+            >
+              公司研究
+            </Link>
+            <Link
+              href="/interview-prep"
+              className="text-[#667085] transition-colors hover:text-[#2b4be0]"
+            >
+              面试准备
+            </Link>
+            <Link
+              href="/career-direction"
+              className="text-[#667085] transition-colors hover:text-[#2b4be0]"
+            >
+              职业方向探索
+            </Link>
+          </nav>
+          <p className="text-[11.5px] text-[#667085]/80">给认真找工作的你 · © 2026</p>
+        </div>
+      </footer>
+    </div>
   );
 }

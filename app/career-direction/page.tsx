@@ -50,12 +50,14 @@ export default function CareerDirectionPage() {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-        职业方向探索
-      </h1>
-      <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-        迷茫的时候聊一聊。AI 一次只问一个问题，聊几轮后给你 2-3 个候选方向和验证它的小实验。
-      </p>
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          职业方向探索
+        </h1>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+          迷茫的时候聊一聊。AI 一次只问一个问题，聊几轮后给你 2-3 个候选方向和验证它的小实验。
+        </p>
+      </div>
 
       {/* 对话区 */}
       <section className="mt-8 space-y-4">
@@ -83,7 +85,7 @@ export default function CareerDirectionPage() {
       {/* 输入区 */}
       <form
         onSubmit={handleSubmit}
-        className="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+        className="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
       >
         <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
           你的背景小传（选填，随时可改，让 AI 更快懂你）
@@ -92,7 +94,7 @@ export default function CareerDirectionPage() {
             onChange={(e) => setBackground(e.target.value)}
             placeholder="你的专业、工作年限、做过什么、在意什么"
             rows={2}
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-neutral-100"
+            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
           />
         </label>
         <label className="mt-4 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -102,21 +104,26 @@ export default function CareerDirectionPage() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={messages.length === 0 ? EMPTY_HINT : "继续聊……"}
             rows={3}
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-neutral-900 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-neutral-100"
+            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
           />
         </label>
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="mt-6 w-full rounded-xl bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+          className="mt-6 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600"
         >
           {loading ? "对方思考中……" : "发送"}
         </button>
       </form>
 
-      <p className="mt-10 text-center text-xs text-neutral-400">
-        AI 分析仅供参考，重大决策请多方核实。
-      </p>
+      <div className="mt-12 rounded-2xl border border-dashed border-neutral-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 text-center dark:border-neutral-800 dark:from-blue-950/20 dark:to-indigo-950/20">
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          💭 提示
+        </h3>
+        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+          请尽量详细地描述你的困惑和背景，以便 AI 提供更准确的建议。
+        </p>
+      </div>
     </main>
   );
 }
