@@ -1,129 +1,126 @@
-"use client";
+'use client';
 
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { AssistantBubble, UserBubble } from "@/components/chat-bubbles";
+import Link from 'next/link';
+import { useState } from 'react';
 
-type ChatMessage = { role: "user" | "assistant"; content: string };
-
-const EMPTY_HINT =
-  "先说说你现在的困惑吧：不知道自己适合什么、要不要转行、几个选择之间怎么挑，都可以。";
-
-export default function CareerDirectionPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [background, setBackground] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const endRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, loading, error]);
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text || loading) return;
-    const nextMessages: ChatMessage[] = [...messages, { role: "user", content: text }];
-    setMessages(nextMessages);
-    setInput("");
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/career-direction", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages, background }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "回复失败，请稍后再试");
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.reply as string },
-      ]);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "回复失败，请稍后再试");
-    } finally {
-      setLoading(false);
-    }
-  }
+export default function CareerDirection() {
+  const [confusion, setConfusion] = useState('');
+  const [interest, setInterest] = useState('');
+  const [skills, setSkills] = useState('');
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-          职业方向探索
-        </h1>
-        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-          迷茫的时候聊一聊。AI 一次只问一个问题，聊几轮后给你 2-3 个候选方向和验证它的小实验。
-        </p>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      {/* 顶部导航栏 */}
+      <header className="site-header">
+        <div className="header-inner">
+          <Link href="/" className="logo">
+            <span className="logo-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </span>
+            <span>天生我材必有用</span>
+          </Link>
+          <nav className="nav">
+            <Link href="/">首页</Link>
+            <Link href="/job-analysis">岗位分析</Link>
+            <Link href="/company-research">公司研究</Link>
+            <Link href="/interview-prep">面试准备</Link>
+            <Link href="/career-direction" className="active">职业方向探索</Link>
+          </nav>
+        </div>
+      </header>
 
-      {/* 对话区 */}
-      <section className="mt-8 space-y-4">
-        {messages.length === 0 && !loading && (
-          <div className="rounded-2xl border border-dashed border-neutral-300 bg-white p-6 text-sm text-neutral-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
-            {EMPTY_HINT}
-          </div>
-        )}
-        {messages.map((msg, i) =>
-          msg.role === "user" ? (
-            <UserBubble key={i} content={msg.content} />
-          ) : (
-            <AssistantBubble key={i} content={msg.content} />
-          )
-        )}
-        {loading && <p className="text-sm text-neutral-400">对方思考中……</p>}
-        {error && (
-          <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/50">
-            {error}
-          </p>
-        )}
-        <div ref={endRef} />
-      </section>
+      {/* 页面主体内容 */}
+      <main className="flex-1">
+        {/* Hero 大标题区 */}
+        <section className="hero">
+          <h1>职业方向探索</h1>
+          <p>迷茫的时候聊一聊，用小实验低成本验证下一个方向。</p>
+        </section>
 
-      {/* 输入区 */}
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
-      >
-        <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          你的背景小传（选填，随时可改，让 AI 更快懂你）
-          <textarea
-            value={background}
-            onChange={(e) => setBackground(e.target.value)}
-            placeholder="你的专业、工作年限、做过什么、在意什么"
-            rows={2}
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
-          />
-        </label>
-        <label className="mt-4 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          想说的话
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={messages.length === 0 ? EMPTY_HINT : "继续聊……"}
-            rows={3}
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={loading || !input.trim()}
-          className="mt-6 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600"
-        >
-          {loading ? "对方思考中……" : "发送"}
-        </button>
-      </form>
+        {/* 居中的表单卡片容器 */}
+        <section className="tools single">
+          <article className="card">
+            
+            {/* 1. 目前的困惑 */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontWeight: 700, fontSize: 14, marginBottom: 8 }}>目前的困惑</label>
+              <input
+                type="text"
+                value={confusion}
+                onChange={(e) => setConfusion(e.target.value)}
+                placeholder="例如：做运营三年了，感觉每天都在重复，没什么成长…"
+              />
+            </div>
 
-      <div className="mt-12 rounded-2xl border border-dashed border-neutral-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 text-center dark:border-neutral-800 dark:from-blue-950/20 dark:to-indigo-950/20">
-        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-          💭 提示
-        </h3>
-        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          请尽量详细地描述你的困惑和背景，以便 AI 提供更准确的建议。
-        </p>
-      </div>
-    </main>
+            {/* 2. 感兴趣的新方向 */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontWeight: 700, fontSize: 14, marginBottom: 8 }}>感兴趣的新方向</label>
+              <input
+                type="text"
+                value={interest}
+                onChange={(e) => setInterest(e.target.value)}
+                placeholder="例如：想转数据分析师、对AI产品感兴趣，或想往客户成功方向试试"
+              />
+            </div>
+
+            {/* 3. 技能与经验盘点 */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontWeight: 700, fontSize: 14, marginBottom: 8 }}>技能与经验盘点</label>
+              <input
+                type="text"
+                value={skills}
+                onChange={(e) => setSkills(e.target.value)}
+                placeholder="例如：会写文案、做过活动策划、能独立跑数据分析、沟通协调强"
+              />
+            </div>
+
+            {/* 开始探索按钮 */}
+            <button 
+              type="button" 
+              style={{ 
+                width: '100%', 
+                marginTop: 24, 
+                padding: 14, 
+                borderRadius: 12, 
+                border: 'none', 
+                background: 'var(--color-brand)', 
+                color: '#fff', 
+                fontSize: 16, 
+                fontWeight: 700, 
+                cursor: 'pointer' 
+              }}
+            >
+              开始探索
+            </button>
+
+            <p style={{ textAlign: 'center', marginTop: 16, fontSize: 12, color: '#98a2b3' }}>
+              探索建议仅供参考，职业方向需结合多方因素慎重考虑。
+            </p>
+
+          </article>
+        </section>
+      </main>
+
+      {/* 页面底部 Footer */}
+      <footer className="site-footer">
+        <div className="logo">
+          <span className="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </span>
+          <span>天生我材必有用</span>
+        </div>
+        <div className="footer-links">
+          <Link href="/job-analysis">岗位分析</Link>
+          <Link href="/company-research">公司研究</Link>
+          <Link href="/interview-prep">面试准备</Link>
+          <Link href="/career-direction">方向探索</Link>
+        </div>
+        <p className="footer-note">给认真找工作的你 · © 2026 <span>求职小助手</span></p>
+      </footer>
+    </div>
   );
 }

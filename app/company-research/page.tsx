@@ -1,149 +1,117 @@
-"use client";
+'use client';
 
-import { FormEvent, useState } from "react";
-import { StringList } from "@/components/string-list";
-import { TextCard } from "@/components/text-card";
-import { VerdictCard } from "@/components/verdict-card";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import Link from 'next/link';
+import { useState } from 'react';
 
-// 与 prompts/company-research.md 定义的 JSON 输出结构一一对应
-type AnalysisResult = {
-  verdict: string;
-  snapshot: string;
-  business_health: string;
-  industry_outlook: string;
-  culture_signals: string[];
-  risks: string[];
-  match_assessment: string;
-  action_items: string[];
-};
-
-export default function CompanyResearchPage() {
-  const [companyName, setCompanyName] = useState("");
-  const [focus, setFocus] = useState("");
-  const [background, setBackground] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<AnalysisResult | null>(null);
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/company-research", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyName, focus, background }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "分析失败，请稍后再试");
-      setResult(data.result as AnalysisResult);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "分析失败，请稍后再试");
-    } finally {
-      setLoading(false);
-    }
-  }
+export default function CompanyResearch() {
+  const [company, setCompany] = useState('');
+  const [job, setJob] = useState('');
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-          公司/行业研究助手
-        </h1>
-        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-          查公司靠什么赚钱、经营得怎么样、行业往哪走、口碑如何，帮你判断这家公司值不值得去。
-        </p>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      {/* 顶部导航栏 */}
+      <header className="site-header">
+        <div className="header-inner">
+          <Link href="/" className="logo">
+            <span className="logo-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </span>
+            <span>天生我材必有用</span>
+          </Link>
+          <nav className="nav">
+            <Link href="/">首页</Link>
+            <Link href="/job-analysis">岗位分析</Link>
+            <Link href="/company-research" className="active">公司研究</Link>
+            <Link href="/interview-prep">面试准备</Link>
+            <Link href="/career-direction">职业方向探索</Link>
+          </nav>
+        </div>
+      </header>
 
-      {/* 输入表单 */}
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
-      >
-        <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          公司或行业名称
-          <input
-            type="text"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            placeholder="例：字节跳动 / 智能驾驶行业"
-            required
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
-          />
-        </label>
-        <label className="mt-4 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          你最关心的问题（选填）
-          <textarea
-            value={focus}
-            onChange={(e) => setFocus(e.target.value)}
-            placeholder="例：加班严重吗？这个业务线稳定吗？应届生进去成长空间大吗？"
-            rows={3}
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
-          />
-        </label>
-        <label className="mt-4 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-          你的背景（选填，越具体分析越准）
-          <textarea
-            value={background}
-            onChange={(e) => setBackground(e.target.value)}
-            placeholder="你的专业、工作年限、做过的项目、掌握的技能"
-            rows={4}
-            className="mt-2 w-full rounded-xl border border-neutral-300 bg-white p-3 text-sm outline-none focus:border-blue-500 dark:border-neutral-700 dark:bg-neutral-950 dark:focus:border-blue-400"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={loading || !companyName.trim()}
-          className="mt-6 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:from-blue-700 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600"
-        >
-          {loading ? (
-            <div className="flex items-center justify-center gap-2">
-              <LoadingSpinner />
-              <span>分析中...</span>
-            </div>
-          ) : (
-            "开始研究"
-          )}
-        </button>
-        {error && (
-          <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/50">
-            {error}
-          </p>
-        )}
-      </form>
-
-      {/* 结构化结果展示 */}
-      {result && (
-        <section className="mt-8 space-y-6">
-          <VerdictCard text={result.verdict} />
-
-          <TextCard title="这家公司是做什么的" text={result.snapshot} />
-          <TextCard title="经营状况" text={result.business_health} />
-          <TextCard title="行业 3-5 年走向" text={result.industry_outlook} />
-
-          <StringList title="文化口碑信号" items={result.culture_signals} />
-          <StringList title="风险点" items={result.risks} accent="amber" />
-
-          <TextCard title="与你的适配度" text={result.match_assessment} />
-
-          <StringList
-            title="面试/投递前的功课"
-            items={result.action_items}
-            accent="emerald"
-          />
+      {/* 页面主体内容 */}
+      <main className="flex-1">
+        {/* Hero 大标题区 */}
+        <section className="hero">
+          <h1>公司/行业研究助手</h1>
+          <p>输入公司或行业，帮你摸清它的赚钱逻辑、口碑风评和行业趋势。</p>
         </section>
-      )}
 
-      <div className="mt-12 rounded-2xl border border-dashed border-neutral-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6 text-center dark:border-neutral-800 dark:from-blue-950/20 dark:to-indigo-950/20">
-        <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-          📊 提示
-        </h3>
-        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          由于公司信息变动频繁，分析结果仅供参考。请结合最新公开信息综合判断。
-        </p>
-      </div>
-    </main>
+        {/* 居中的表单卡片容器 */}
+        <section className="tools single">
+          <article className="card">
+            
+            {/* 公司名称或行业领域 */}
+            <div style={{ marginBottom: 24 }}>
+              <label htmlFor="company" style={{ display: 'block', fontWeight: 700, fontSize: 14, marginBottom: 8 }}>公司名称或行业领域</label>
+              <input
+                id="company"
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="例如：字节跳动、跨境电商"
+              />
+            </div>
+
+            {/* 面试岗位 (新增部分) */}
+            <div style={{ marginBottom: 24 }}>
+              <label htmlFor="job" style={{ display: 'block', fontWeight: 700, fontSize: 14, marginBottom: 8 }}>面试岗位</label>
+              <input
+                id="job"
+                type="text"
+                value={job}
+                onChange={(e) => setJob(e.target.value)}
+                placeholder="例如：前端开发工程师、高级产品经理"
+              />
+            </div>
+
+            {/* 开始研究按钮 */}
+            <button 
+              type="button" 
+              className="btn-start" 
+              style={{ 
+                width: '100%', 
+                marginTop: 24, 
+                padding: 14, 
+                borderRadius: 12, 
+                border: 'none', 
+                background: 'var(--color-brand)', 
+                color: '#fff', 
+                fontSize: 16, 
+                fontWeight: 700, 
+                cursor: 'pointer' 
+              }}
+            >
+              开始研究
+            </button>
+
+            <p className="footer-note" style={{ textAlign: 'center', marginTop: 16, fontSize: 12, color: '#98a2b3' }}>
+              研究结果仅供参考，请结合多方信息综合判断。
+            </p>
+
+          </article>
+        </section>
+      </main>
+
+      {/* 页面底部 Footer */}
+      <footer className="site-footer">
+        <div className="logo">
+          <span className="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </span>
+          <span>天生我材必有用</span>
+        </div>
+        <div className="footer-links">
+          <Link href="/job-analysis">岗位分析</Link>
+          <Link href="/company-research">公司研究</Link>
+          <Link href="/interview-prep">面试准备</Link>
+          <Link href="/career-direction">方向探索</Link>
+        </div>
+        <p className="footer-note">给认真找工作的你 · © 2026 <span>求职小助手</span></p>
+      </footer>
+    </div>
   );
 }

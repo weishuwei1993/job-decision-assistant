@@ -1,126 +1,126 @@
-'use client';
-
 import Link from 'next/link';
 
 export default function Home() {
-  return (
-    <div className="min-h-screen flex flex-col">
-      <a href="#tools" className="sr-only">跳到工具区</a>
+  const tools = [
+    {
+      id: '01',
+      title: '岗位需求分析器',
+      desc: '粘贴 JD，看懂它到底要什么、跟你合不合适、值不值得投。',
+      tag: '输入 JD',
+      path: '/job-analysis',
+    },
+    {
+      id: '02',
+      title: '公司/行业研究助手',
+      desc: '查公司靠什么赚钱、行业往哪走、口碑如何，判断值不值得去。',
+      tag: '输入公司/行业',
+      path: '/company-research',
+    },
+    {
+      id: '03',
+      title: '面试准备',
+      desc: '猜透面试官真正想考什么，还能来一场带点评的模拟面试。',
+      tag: '模拟问答',
+      path: '/interview-prep',
+    },
+    {
+      id: '04',
+      title: '职业方向探索',
+      desc: '迷茫的时候聊一聊，用小实验低成本验证下一个方向。',
+      tag: '聊一聊',
+      path: '/career-direction',
+    },
+  ];
 
-      <header className="site-header">
-        <div className="header-inner">
-          <Link href="/" className="logo">
-            <span className="logo-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </span>
-            <span>天生我材必有用</span>
-          </Link>
-          <nav className="nav">
-            <Link href="/" className="active">首页</Link>
-            <Link href="/job-analysis">岗位分析</Link>
-            <Link href="/company-research">公司研究</Link>
-            <Link href="/interview-prep">面试准备</Link>
-            <Link href="/career-direction">职业方向探索</Link>
-          </nav>
-        </div>
+  return (
+    <div className="min-h-screen flex flex-col" style={{ background: '#f8fafc', fontFamily: '"PingFang SC", "Microsoft YaHei", sans-serif' }}>
+      {/* 顶部超大标题区 (完美复刻第二张图顶部) */}
+      <header style={{ textAlign: 'center', paddingTop: '100px', paddingBottom: '60px' }}>
+        <h1 style={{ fontSize: '48px', fontWeight: '900', color: '#0f172a', margin: '0', letterSpacing: '2px' }}>
+          天生我材必有用
+        </h1>
+        <p style={{ fontSize: '16px', color: '#6b7280', margin: '16px 0 0', letterSpacing: '1px' }}>
+          把求职从碰运气变成有方法
+        </p>
       </header>
 
-      <main className="flex-1">
-        <section className="hero">
-          <h1>天生我材必有用</h1>
-          <p>把求职从碰运气变成有方法</p>
-        </section>
+      {/* 主体 2x2 卡片网格区 (完美复刻第二张图卡片) */}
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px 80px', width: '100%' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '32px' }}>
+          {tools.map((tool) => (
+            <Link 
+              key={tool.id} 
+              href={tool.path} 
+              style={{ textDecoration: 'none' }}
+            >
+              <article style={{ 
+                position: 'relative',
+                background: 'var(--color-bg-light, #f0f7ff)', 
+                borderRadius: '24px', 
+                padding: '32px', 
+                minHeight: '200px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                border: '1px solid #e2e8f0',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+              }}>
+                {/* 右上角序号 */}
+                <div style={{ position: 'absolute', top: '32px', right: '32px', fontSize: '14px', color: '#94a3b8' }}>
+                  {tool.id}
+                </div>
 
-        <section id="tools" className="tools">
-          <article className="card">
-            <span className="card-num">01</span>
-            <div className="card-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-            </div>
-            <h3>岗位需求分析器</h3>
-            <p>粘贴 JD，看懂它到底要什么、跟你合不合适、值不值得投。</p>
-            <div className="card-foot">
-              <span className="tag">输入 JD</span>
-              <Link href="/job-analysis" className="enter">进入 →</Link>
-            </div>
-          </article>
+                {/* 卡片左侧内容区 */}
+                <div>
+                  <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#0f172a', margin: '0 0 16px 0' }}>{tool.title}</h2>
+                  <p style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.6', margin: 0 }}>{tool.desc}</p>
+                </div>
 
-          <article className="card">
-            <span className="card-num">02</span>
-            <div className="card-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="20" x2="12" y2="10"></line>
-                <line x1="18" y1="20" x2="18" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="16"></line>
-              </svg>
-            </div>
-            <h3>公司/行业研究助手</h3>
-            <p>查公司靠什么赚钱、行业往哪走、口碑如何，判断值不值得去。</p>
-            <div className="card-foot">
-              <span className="tag">输入公司 / 行业</span>
-              <Link href="/company-research" className="enter">进入 →</Link>
-            </div>
-          </article>
-
-          <article className="card">
-            <span className="card-num">03</span>
-            <div className="card-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
-            <h3>面试准备</h3>
-            <p>猜透面试官真正想考什么，还能来一场带点评的模拟面试。</p>
-            <div className="card-foot">
-              <span className="tag">模拟问答</span>
-              <Link href="/interview-prep" className="enter">进入 →</Link>
-            </div>
-          </article>
-
-          <article className="card">
-            <span className="card-num">04</span>
-            <div className="card-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f6ef7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"></path>
-                <polyline points="1 6 1 16 8 12 16 16 23 12 23 2 16 6 8 2 1 6"></polyline>
-              </svg>
-            </div>
-            <h3>职业方向探索</h3>
-            <p>迷茫的时候聊一聊，用小实验低成本验证下一个方向。</p>
-            <div className="card-foot">
-              <span className="tag">聊一聊</span>
-              <Link href="/career-direction" className="enter">进入 →</Link>
-            </div>
-          </article>
-        </section>
-
-        <footer className="site-footer">
-          <div className="logo">
-            <span className="logo-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </span>
-            <span>天生我材必有用</span>
-          </div>
-          <div className="footer-links">
-            <Link href="/job-analysis">岗位分析</Link>
-            <Link href="/company-research">公司研究</Link>
-            <Link href="/interview-prep">面试准备</Link>
-            <Link href="/career-direction">方向探索</Link>
-          </div>
-          <p className="footer-note">给认真找工作的你 · © 2026 <span>求职小助手</span></p>
-        </footer>
+                {/* 卡片底部操作区 */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '20px' }}>
+                  {/* 左侧标签 */}
+                  <span style={{ 
+                    display: 'inline-block',
+                    background: '#ffffff', 
+                    color: '#3b82f6',
+                    fontSize: '12px', 
+                    fontWeight: '500',
+                    padding: '6px 14px', 
+                    borderRadius: '999px',
+                    border: '1px solid #bfdbfe'
+                  }}>
+                    {tool.tag}
+                  </span>
+                  {/* 右侧进入按钮 */}
+                  <span style={{ fontSize: '14px', color: '#2563eb', fontWeight: '600' }}>
+                    进入 &rarr;
+                  </span>
+                </div>
+              </article>
+            </Link>
+          ))}
+        </div>
       </main>
+
+      {/* 底部 */}
+      <footer className="site-footer">
+        <div className="logo">
+          <span className="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </span>
+          <span>天生我材必有用</span>
+        </div>
+        <div className="footer-links">
+          <Link href="/job-analysis">岗位分析</Link>
+          <Link href="/company-research">公司研究</Link>
+          <Link href="/interview-prep">面试准备</Link>
+          <Link href="/career-direction">方向探索</Link>
+        </div>
+        <p className="footer-note">给认真找工作的你 · © 2026 <span>求职小助手</span></p>
+      </footer>
     </div>
   );
 }
